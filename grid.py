@@ -49,5 +49,6 @@ class Grid:
         return 
 
     def getUpNode(self, currentNode) -> aNode:
-        return self.pyList.index(currentNode) - self.rows
+        
+        return self.pyList[self.pyList.index(currentNode) - self.rows]
     

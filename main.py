@@ -28,7 +28,7 @@ def createGridModel():
     gridModel = Grid(rows, rows, size)
 
 # Redraws the entire model
-def redraw(window, selectedTiles, startAndEndTiles):
+def redraw(window, selectedTiles, startAndEndTiles, testTiles):
     global size, rows
 
     # fill window with black 
@@ -41,6 +41,9 @@ def redraw(window, selectedTiles, startAndEndTiles):
     # fill in tiles that are start/ends
     drawStartAndEndTiles(window, startAndEndTiles)
 
+    # fill in the test tiles (testing purposes)
+    drawTestTiles(window, testTiles)
+
     # update display
     pygame.display.update()
 
@@ -52,6 +55,10 @@ def drawSelectedTiles(window, tiles):
 def drawStartAndEndTiles(window, tiles):
     for tile in tiles:
         pygame.draw.rect(window, WHITE, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+
+def drawTestTiles(window, tiles):
+    for tile in tiles:
+        pygame.draw.rect(window, GREEN, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
 
 # Defines tile size based on size of window and number of rows
 def setTileSize(size, rows):
@@ -83,6 +90,7 @@ def main():
 
     running = True   # Used to keep the program running
     ready = False    # Used to start the A* pathfinding
+    testing = False  # Used to start testing 
 
     # create the grid
     createGridModel()
@@ -92,6 +100,9 @@ def main():
 
     # create a list for 'start' and 'end' tiles
     startAndEndTiles = []
+
+    # create a list for 'test' tiles
+    testTiles = []
 
     # Main loop execution
     while running: 
@@ -123,10 +134,10 @@ def main():
                     else:
                         startAndEndTiles.append(gridModel.getTileListItem(mousePos))
             
-            # # Handle Space input ( start algorithm ) 
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_SPACE:
-            #         ready = True
+            # Handle Space input ( Run tests ) 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    testing = True
 
             if len(startAndEndTiles) > 1:
                 ready = True
@@ -153,13 +164,22 @@ def main():
 
                     # if end found
                     if currentNode == startAndEndTiles[1]:
-                        # #############################################################   backtrack to get the path  #
+                        # #############################################################   backtrack to get the path  #####
                         print("success!")
                     # else, generate children
                     else:
-                        
+
                         pass
 
+            # run tests
+            if testing == True:
+                
+                # test 1
+                # checking the node movements  ->  should paint a green square one node above the current node
+                currentNode = startAndEndTiles[0]
+                upNode = gridModel.getUpNode(currentNode)
+                testTiles.append(upNode)
+                
 
 
 #     // Found the goal
@@ -183,7 +203,7 @@ def main():
 #         // Add the child to the openList
 #         add the child to the openList
 
-        redraw(window, selectedTiles, startAndEndTiles)
+        redraw(window, selectedTiles, startAndEndTiles, testTiles)
     
     pygame.quit()
 
