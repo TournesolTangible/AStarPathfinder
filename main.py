@@ -47,11 +47,11 @@ def redraw(window, selectedTiles, startAndEndTiles):
 # Draws the selected tiles in GRAY
 def drawSelectedTiles(window, tiles):
     for tile in tiles:
-        pygame.draw.rect(window, GRAY, pygame.Rect(tile[0], tile[1], getTileSize(), getTileSize()))
+        pygame.draw.rect(window, GRAY, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
 
 def drawStartAndEndTiles(window, tiles):
     for tile in tiles:
-        pygame.draw.rect(window, RED, pygame.Rect(tile[0], tile[1], getTileSize(), getTileSize()))
+        pygame.draw.rect(window, RED, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
 
 # Defines tile size based on size of window and number of rows
 def setTileSize(size, rows):
@@ -101,22 +101,17 @@ def main():
             # Handle Left Click (selecting tiles)
             if state == (True, False, False):
 
-                # # If tile selected  ->  unselect it
-                # if gridModel.getTileListItem(mousePos) in selectedTiles:
-                #     selectedTiles.remove(gridModel.getTileListItem(mousePos))
+                # If tile selected  ->  unselect it
+                if gridModel.getTileListItem(mousePos) in selectedTiles:
+                    selectedTiles.remove(gridModel.getTileListItem(mousePos))
 
-                # # If tile unselected  ->  select it
-                # else:
+                # If tile unselected  ->  select it
+                else:
                     selectedTiles.append(gridModel.getTileListItem(mousePos))
 
             # Handle Right Click (selecting start and end node)
             if state == (False, False, True):
-                
-                # If tile already selected  ->  unselect it and make it into a start/end
-                if gridModel.getTileListItem(mousePos) in selectedTiles:
-                    print("getting through")
-                    selectedTiles.remove(gridModel.getTileListItem(mousePos))
-                    startAndEndTiles.append(gridModel.getTileListItem(mousePos))
+                startAndEndTiles.append(gridModel.getTileListItem(mousePos))
 
                 
 

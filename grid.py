@@ -1,3 +1,4 @@
+from node import *
 
 class Grid:
 
@@ -25,8 +26,9 @@ class Grid:
 
             for j in range(self.cols):
                 
-                # one tile has 4 values, (x,y) of top left and (x,y) of bottom right
-                self.pyList.append( [tileX, tileY, tileX+tileLength, tileY+tileLength] )
+                # one node has 7 values: f, g, h, and (x,y) of top left and (x,y) of bottom right
+                node = aNode(0, 0, 0, tileX, tileY, tileX+tileLength, tileY+tileLength)
+                self.pyList.append( node )
                 tileX += int(tileLength)
                 tileNum += 1
 
@@ -41,7 +43,7 @@ class Grid:
         y = xy[1]
 
         for i in self.pyList:
-            if x >= i[0] and x <= i[2]:
-                if y >= i[1] and y <= i[3]:
+            if x >= i.getX() and x <= i.getW():
+                if y >= i.getY() and y <= i.getZ():
                     return i
         return 
