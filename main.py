@@ -51,7 +51,7 @@ def drawSelectedTiles(window, tiles):
 
 def drawStartAndEndTiles(window, tiles):
     for tile in tiles:
-        pygame.draw.rect(window, RED, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+        pygame.draw.rect(window, WHITE, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
 
 # Defines tile size based on size of window and number of rows
 def setTileSize(size, rows):
@@ -61,6 +61,12 @@ def setTileSize(size, rows):
 def getTileSize():
     return tileSize
 
+def findSmallestFValue(list) -> aNode:
+    smallestF = 100000.0
+    for item in list:
+        if item.getF() < smallestF:
+            smallestFNode = item
+    return smallestFNode
 
 ## MAIN PROGRAM STARTS HERE ############################
 #
@@ -75,7 +81,8 @@ def main():
     # window definition
     window = pygame.display.set_mode((size, size))
 
-    running = True
+    running = True   # Used to keep the program running
+    ready = False    # Used to start the A* pathfinding
 
     # create the grid
     createGridModel()
@@ -101,19 +108,80 @@ def main():
             # Handle Left Click (selecting tiles)
             if state == (True, False, False):
 
-                # If tile selected  ->  unselect it
-                if gridModel.getTileListItem(mousePos) in selectedTiles:
-                    selectedTiles.remove(gridModel.getTileListItem(mousePos))
+                # # If tile selected  ->  unselect it
+                # if gridModel.getTileListItem(mousePos) in selectedTiles and gridModel.getTileListItem(mousePos) not in startAndEndTiles:
+                #     selectedTiles.remove(gridModel.getTileListItem(mousePos))
 
-                # If tile unselected  ->  select it
-                else:
+                # # If tile unselected  ->  select it
+                # else:
                     selectedTiles.append(gridModel.getTileListItem(mousePos))
 
             # Handle Right Click (selecting start and end node)
             if state == (False, False, True):
-                startAndEndTiles.append(gridModel.getTileListItem(mousePos))
+                    if gridModel.getTileListItem(mousePos) in startAndEndTiles and gridModel.getTileListItem(mousePos) not in selectedTiles:
+                        startAndEndTiles.remove(gridModel.getTileListItem(mousePos))
+                    else:
+                        startAndEndTiles.append(gridModel.getTileListItem(mousePos))
+            
+            # # Handle Space input ( start algorithm ) 
+            # if event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_SPACE:
+            #         ready = True
 
-                
+            if len(startAndEndTiles) > 1:
+                ready = True
+                startAndEnd = (startAndEndTiles[0], startAndEndTiles[1])
+
+
+            # MAIN PATHFINDING CODE HERE ###################
+            #
+            if ready == True:
+                # initialize lists
+                openList = []
+                closedList = []
+
+                # add the starting node
+                openList.append(startAndEndTiles[0])
+                print(openList)
+                # loop until end is found
+                while len(openList) > 0:
+                    
+                    # get current node
+                    currentNode = findSmallestFValue(openList)
+                    openList.remove(currentNode)
+                    closedList.append(currentNode)
+
+                    # if end found
+                    if currentNode == startAndEndTiles[1]:
+                        # #############################################################   backtrack to get the path  #
+                        print("success!")
+                    # else, generate children
+                    else:
+                        
+                        pass
+
+
+
+#     // Found the goal
+#     if currentNode is the goal
+#         Congratz! You've found the end! Backtrack to get path
+#     // Generate children
+#     let the children of the currentNode equal the adjacent nodes
+    
+#     for each child in the children
+#         // Child is on the closedList
+#         if child is in the closedList
+#             continue to beginning of for loop
+#         // Create the f, g, and h values
+#         child.g = currentNode.g + distance between child and current
+#         child.h = distance from child to end
+#         child.f = child.g + child.h
+#         // Child is already in openList
+#         if child.position is in the openList's nodes positions
+#             if the child.g is higher than the openList node's g
+#                 continue to beginning of for loop
+#         // Add the child to the openList
+#         add the child to the openList
 
         redraw(window, selectedTiles, startAndEndTiles)
     

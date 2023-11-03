@@ -3,7 +3,7 @@ class aNode:
 
     # A Node is used to represent each of the possible spaces in the map
 
-    def __init__(self, fCost, gDist, hDist, x, y, w, z):
+    def __init__(self, fCost, gDist, hDist, x, y, w, z, parentNode):
 
         self.f = fCost   # The cost to get to the this node in particular
         self.g = gDist   # The distance from the first node to this node
@@ -14,6 +14,7 @@ class aNode:
         self.w = w   # x of the node's bottom right coordinate
         self.z = z   # y of the node's bottom right coordinate
 
+        self.parent = parentNode   # the node that was visited immediately before this one
     
     def getX(self):
         return self.x
