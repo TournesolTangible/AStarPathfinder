@@ -157,14 +157,7 @@ def main():
 
             # MAIN PATHFINDING CODE HERE ###################
             #
-            if ready == True:
-
-
-                
-                ready = False
-                
-                
-                
+            if ready == True:               
                 
                 # initialize lists
                 openList = []
@@ -189,6 +182,35 @@ def main():
                     else:
 
                         pass
+
+
+
+#     // Found the goal
+#     if currentNode is the goal
+#         Congratz! You've found the end! Backtrack to get path
+#     // Generate children
+#     let the children of the currentNode equal the adjacent nodes
+    
+#     for each child in the children
+#         // Child is on the closedList
+#         if child is in the closedList
+#             continue to beginning of for loop
+#         // Create the f, g, and h values
+#         child.g = currentNode.g + distance between child and current
+#         child.h = distance from child to end
+#         child.f = child.g + child.h
+#         // Child is already in openList
+#         if child.position is in the openList's nodes positions
+#             if the child.g is higher than the openList node's g
+#                 continue to beginning of for loop
+#         // Add the child to the openList
+#         add the child to the openList
+
+
+
+
+
+
 
             # run tests
             if testing == True and len(startAndEndTiles) > 0:
@@ -240,28 +262,6 @@ def main():
                 currentNode = startAndEndTiles[0]
                 testNode = gridModel.getUpLeftNode(currentNode)
                 testTiles.append(testNode)
-
-
-#     // Found the goal
-#     if currentNode is the goal
-#         Congratz! You've found the end! Backtrack to get path
-#     // Generate children
-#     let the children of the currentNode equal the adjacent nodes
-    
-#     for each child in the children
-#         // Child is on the closedList
-#         if child is in the closedList
-#             continue to beginning of for loop
-#         // Create the f, g, and h values
-#         child.g = currentNode.g + distance between child and current
-#         child.h = distance from child to end
-#         child.f = child.g + child.h
-#         // Child is already in openList
-#         if child.position is in the openList's nodes positions
-#             if the child.g is higher than the openList node's g
-#                 continue to beginning of for loop
-#         // Add the child to the openList
-#         add the child to the openList
 
         redraw(window, selectedTiles, startAndEndTiles, testTiles)
     

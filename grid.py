@@ -53,20 +53,44 @@ class Grid:
     #
     # Used to return one of the nodes in any of the 8 directions
     def getUpLeftNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) - self.rows - 1]
+        try:
+            return self.pyList[self.pyList.index(currentNode) - self.rows - 1]
+        except IndexError:
+            print("Warning - index of 'Up Left Node' is out of bounds") 
     def getUpRightNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) - self.rows + 1]
+        try:
+            return self.pyList[self.pyList.index(currentNode) - self.rows + 1]
+        except IndexError:
+            print("Warning - index of 'Up Right Node' is out of bounds")
     def getDownRightNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) + self.rows + 1]
+        try:    
+            return self.pyList[self.pyList.index(currentNode) + self.rows + 1]
+        except IndexError:
+            print("Warning - index of 'Down Right Node' is out of bounds")
     def getDownLeftNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) + self.rows -1]
+        try:
+            return self.pyList[self.pyList.index(currentNode) + self.rows -1]
+        except IndexError:
+            print("Warning - index of 'Down Left Node' is out of bounds")
     def getDownNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) + self.rows]
+        try:
+            return self.pyList[self.pyList.index(currentNode) + self.rows]
+        except IndexError:
+            print("Warning - index of 'Down Node' is out of bounds")
     def getUpNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) - self.rows]
+        try:
+            return self.pyList[self.pyList.index(currentNode) - self.rows]
+        except IndexError:
+            print("Warning - index of 'Up Node' is out of bounds")
     def getLeftNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) - 1]
+        try:
+            return self.pyList[self.pyList.index(currentNode) - 1]
+        except IndexError:
+            print("Warning - index of 'Left Node' is out of bounds")
     def getRightNode(self, currentNode) -> aNode:
-        return self.pyList[self.pyList.index(currentNode) + 1]
+        try:
+            return self.pyList[self.pyList.index(currentNode) + 1]
+        except IndexError:
+            print("Warning - index of 'Right Node' is out of bounds")
     
     
