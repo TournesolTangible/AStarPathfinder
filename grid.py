@@ -48,7 +48,25 @@ class Grid:
                     return i
         return 
 
+    
+    # Traversal Methods ###################################################
+    #
+    # Used to return one of the nodes in any of the 8 directions
+    def getUpLeftNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) - self.rows - 1]
+    def getUpRightNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) - self.rows + 1]
+    def getDownRightNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) + self.rows + 1]
+    def getDownLeftNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) + self.rows -1]
+    def getDownNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) + self.rows]
     def getUpNode(self, currentNode) -> aNode:
-        
         return self.pyList[self.pyList.index(currentNode) - self.rows]
+    def getLeftNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) - 1]
+    def getRightNode(self, currentNode) -> aNode:
+        return self.pyList[self.pyList.index(currentNode) + 1]
+    
     

@@ -75,6 +75,11 @@ def findSmallestFValue(list) -> aNode:
             smallestFNode = item
     return smallestFNode
 
+def clearAllLists(listOfLists):
+    for list in listOfLists:
+        list.clear()
+
+
 ## MAIN PROGRAM STARTS HERE ############################
 #
 #
@@ -129,24 +134,38 @@ def main():
 
             # Handle Right Click (selecting start and end node)
             if state == (False, False, True):
-                    if gridModel.getTileListItem(mousePos) in startAndEndTiles and gridModel.getTileListItem(mousePos) not in selectedTiles:
-                        startAndEndTiles.remove(gridModel.getTileListItem(mousePos))
-                    else:
-                        startAndEndTiles.append(gridModel.getTileListItem(mousePos))
-            
-            # Handle Space input ( Run tests ) 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if gridModel.getTileListItem(mousePos) in startAndEndTiles and gridModel.getTileListItem(mousePos) not in selectedTiles:
+                            startAndEndTiles.remove(gridModel.getTileListItem(mousePos))
+                        else:
+                            startAndEndTiles.append(gridModel.getTileListItem(mousePos))
+                
+            # Handle Space input ( Run tests )  or 'c' input ( Clear lists, fresh board )
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     testing = True
+                elif event.key == pygame.K_c:
+                    clearAllLists([selectedTiles, startAndEndTiles, testTiles])
 
+            # Handle start and end placed ( Begin search algorithm )
             if len(startAndEndTiles) > 1:
                 ready = True
                 startAndEnd = (startAndEndTiles[0], startAndEndTiles[1])
+
+            
 
 
             # MAIN PATHFINDING CODE HERE ###################
             #
             if ready == True:
+
+
+                
+                ready = False
+                
+                
+                
+                
                 # initialize lists
                 openList = []
                 closedList = []
@@ -172,14 +191,55 @@ def main():
                         pass
 
             # run tests
-            if testing == True:
+            if testing == True and len(startAndEndTiles) > 0:
                 
                 # test 1
                 # checking the node movements  ->  should paint a green square one node above the current node
                 currentNode = startAndEndTiles[0]
-                upNode = gridModel.getUpNode(currentNode)
-                testTiles.append(upNode)
+                testNode = gridModel.getUpNode(currentNode)
+                testTiles.append(testNode)
+
+                # test 2
+                # checking the node movements  ->  should paint a green square one node above and to the right of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getUpRightNode(currentNode)
+                testTiles.append(testNode)
+
+                # test 3
+                # checking the node movements  ->  should paint a green square one node to the right of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getRightNode(currentNode)
+                testTiles.append(testNode)
+
+                # test 4
+                # checking the node movements  ->  should paint a green square one node to the right and down of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getDownRightNode(currentNode)
+                testTiles.append(testNode)
+
+                # test 5
+                # checking the node movements  ->  should paint a green square one node down of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getDownNode(currentNode)
+                testTiles.append(testNode)
+
+                # test 6
+                # checking the node movements  ->  should paint a green square one node down and to the left of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getDownLeftNode(currentNode)
+                testTiles.append(testNode)
                 
+                # test 7
+                # checking the node movements  ->  should paint a green square one node to the left of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getLeftNode(currentNode)
+                testTiles.append(testNode)
+
+                # test 8
+                # checking the node movements  ->  should paint a green square one node to the left and up of the current node
+                currentNode = startAndEndTiles[0]
+                testNode = gridModel.getUpLeftNode(currentNode)
+                testTiles.append(testNode)
 
 
 #     // Found the goal
