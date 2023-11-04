@@ -186,21 +186,40 @@ def main():
                 currentNode = startAndEnd[0]
                 currentNode.setG(0)
                 currentNode.setH(startAndEnd)
-                currentNode.setF()
+
+
+#     // Get the current node
+#     let the currentNode equal the node with the least f value
+#     remove the currentNode from the openList
+#     add the currentNode to the closedList
+
+#     // Found the goal
+#     if currentNode is the goal
+#         Congratz! You've found the end! Backtrack to get path
+#     // Generate children
+#     let the children of the currentNode equal the adjacent nodes
+    
+#     for each child in the children
+#         // Child is on the closedList
+#         if child is in the closedList
+#             continue to beginning of for loop
+#         // Create the f, g, and h values
+#         child.g = currentNode.g + distance between child and current
+#         child.h = distance from child to end
+#         child.f = child.g + child.h
+#         // Child is already in openList
+#         if child.position is in the openList's nodes positions
+#             if the child.g is higher than the openList node's g
+#                 continue to beginning of for loop
+#         // Add the child to the openList
+#         add the child to the openList
+
 
                 # add the starting node
                 openList.append(currentNode)
-                print(openList)
                 
                 # loop until end is found
                 while len(openList) > 0:
-                    
-                    if startAndEnd[1] in closedList:
-                        # #############################################################   backtrack to get the path  #####
-                        print("\n\n\n                               success!\n\n\n")
-                        ready = False
-                        endFound = True
-                        break
 
                     # get current node
                     currentNode = findSmallestFValue(openList)
@@ -242,13 +261,18 @@ def main():
                                     child.setH(nodePair)
                                     child.setF()
 
+                        if startAndEnd[1] in closedList or currentNode == startAndEnd[1]:
+                            # #############################################################   backtrack to get the path  #####
+                            print("\n\n\n                               success!\n\n\n")
+                            ready = False
+                            endFound = True
+                            break
+
                     redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
-                    sleep(0.1)    
-                    # no path found - report failure
-                    print("No path could be found - please press 'c' and try again!")
+                    sleep(0.1) 
 
-
-            # run tests
+            # Run tests ##########################################################
+            #
             if testing == True and len(startAndEndTiles) > 0:
                 
                 # test 1
@@ -298,7 +322,7 @@ def main():
                 currentNode = startAndEndTiles[0]
                 testNode = gridModel.getUpLeftNode(currentNode)
                 testTiles.append(testNode)
-                
+
         redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
     pygame.quit()
 

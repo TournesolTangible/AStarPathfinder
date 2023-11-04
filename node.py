@@ -1,3 +1,4 @@
+import math
 
 class aNode:
 
@@ -58,4 +59,6 @@ class aNode:
         print("\n")
         print(f"{xy[1].getY()} - {xy[0].getY()}")
 
-        self.h = max( abs(xy[1].getX() - xy[0].getX()), abs(xy[1].getY() - xy[0].getY()) )
+        self.h = math.sqrt((xy[1].getX() - xy[0].getX())**2 + (xy[1].getY() - xy[0].getY())**2)
+
+        # self.h = max( abs(xy[1].getX() - xy[0].getX()), abs(xy[1].getY() - xy[0].getY()) )
