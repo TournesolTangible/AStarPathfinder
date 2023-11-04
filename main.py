@@ -79,6 +79,15 @@ def clearAllLists(listOfLists):
     for list in listOfLists:
         list.clear()
 
+# Set parentNode to be parent of all adjacent nodes that aren't blocked
+def setAllAdjacentChildren(parentNode, blockedList) -> []:
+    listOfChildren = gridModel.getAllAdjacentNodes()
+    for node in listOfChildren:
+        if node not in blockedList:
+            node.setParent(parentNode)
+            listOfChildren.append(node)
+    return listOfChildren
+
 
 ## MAIN PROGRAM STARTS HERE ############################
 #
@@ -100,8 +109,8 @@ def main():
     # create the grid
     createGridModel()
 
-    # create a list for tiles that are 'selected' by the user
-    selectedTiles = []
+    # create a list for tiles that are 'blocked' by the user
+    blockedTiles = []
 
     # create a list for 'start' and 'end' tiles
     startAndEndTiles = []
@@ -130,12 +139,12 @@ def main():
 
                 # # If tile unselected  ->  select it
                 # else:
-                    selectedTiles.append(gridModel.getTileListItem(mousePos))
+                    blockedTiles.append(gridModel.getTileListItem(mousePos))
 
             # Handle Right Click (selecting start and end node)
             if state == (False, False, True):
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                        if gridModel.getTileListItem(mousePos) in startAndEndTiles and gridModel.getTileListItem(mousePos) not in selectedTiles:
+                        if gridModel.getTileListItem(mousePos) in startAndEndTiles and gridModel.getTileListItem(mousePos) not in blockedTiles:
                             startAndEndTiles.remove(gridModel.getTileListItem(mousePos))
                         else:
                             startAndEndTiles.append(gridModel.getTileListItem(mousePos))
@@ -145,7 +154,7 @@ def main():
                 if event.key == pygame.K_SPACE:
                     testing = True
                 elif event.key == pygame.K_c:
-                    clearAllLists([selectedTiles, startAndEndTiles, testTiles])
+                    clearAllLists([blockedTiles, startAndEndTiles, testTiles])
 
             # Handle start and end placed ( Begin search algorithm )
             if len(startAndEndTiles) > 1:
@@ -155,50 +164,78 @@ def main():
             
 
 
-            # MAIN PATHFINDING CODE HERE ###################
+            # MAIN PATHFINDING CODE HERE #########################################
             #
             if ready == True:               
                 
                 # initialize lists
-                openList = []
-                closedList = []
+                openList = []    # for tiles that may be 'traversed' 
+                closedList = []  # for tiles that may not be 'traversed 
+
+                # set currentNode to starting tile and initialize g, h, f values
+                currentNode = startAndEnd[0]
+                currentNode.setG(0)
+                currentNode.setH(startAndEnd)
+                currentNode.setF()
 
                 # add the starting node
-                openList.append(startAndEndTiles[0])
+                openList.append(currentNode)
                 print(openList)
+                
                 # loop until end is found
                 while len(openList) > 0:
                     
+                    if startAndEnd[1] in closedList:
+                        # #############################################################   backtrack to get the path  #####
+                        print("\n\n\n                               success!\n\n\n")
+                        break
+
                     # get current node
                     currentNode = findSmallestFValue(openList)
                     openList.remove(currentNode)
                     closedList.append(currentNode)
 
                     # if end found
-                    if currentNode == startAndEndTiles[1]:
+                    if currentNode == startAndEnd[1]:
                         # #############################################################   backtrack to get the path  #####
-                        print("success!")
-                    # else, generate children
+                        print("\n\n\n                               success!\n\n\n")
+                        break
+
+                    # else, generate list of 'unblocked' children
                     else:
+                        children = setAllAdjacentChildren(currentNode)
 
-                        pass
+                    for child in children:
+                        # ignore if child in closedList (not traversable)
+                        if child in closedList or child in blockedTiles:
+                            pass
+
+                        # if not in openList, add it to openList and initialize g, h, f values
+                        elif child not in openList:
+                            openList.append(child)
+                            child.setG(child.getParent().getG()+1)
+                            nodePair = [child, startAndEnd[1]]
+                            child.setH(nodePair)
+                            child.setF()
+
+                        # if child in openList  ->  check if it has a lower g value (more efficient path)   
+                        elif child in openList:
+                            if child.getG() < currentNode.getG():
+                                child.setParent(currentNode)
+                                child.setG(child.getParent().getG()+1)
+                                nodePair = [child, startAndEnd[1]]
+                                child.setH(nodePair)
+                                child.setF()
+
+                        
+                        
+                    # no path found - report failure
+                    print("No path could be found - please press 'c' and try again!")
 
 
 
-#     // Found the goal
-#     if currentNode is the goal
-#         Congratz! You've found the end! Backtrack to get path
-#     // Generate children
-#     let the children of the currentNode equal the adjacent nodes
-    
-#     for each child in the children
-#         // Child is on the closedList
-#         if child is in the closedList
-#             continue to beginning of for loop
-#         // Create the f, g, and h values
-#         child.g = currentNode.g + distance between child and current
-#         child.h = distance from child to end
-#         child.f = child.g + child.h
+
+
 #         // Child is already in openList
 #         if child.position is in the openList's nodes positions
 #             if the child.g is higher than the openList node's g
@@ -263,7 +300,7 @@ def main():
                 testNode = gridModel.getUpLeftNode(currentNode)
                 testTiles.append(testNode)
 
-        redraw(window, selectedTiles, startAndEndTiles, testTiles)
+        redraw(window, blockedTiles, startAndEndTiles, testTiles)
     
     pygame.quit()
 

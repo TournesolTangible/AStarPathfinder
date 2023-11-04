@@ -16,6 +16,9 @@ class aNode:
 
         self.parent = parentNode   # the node that was visited immediately before this one
     
+    def setParent(self, parentNode):
+        self.parent = parentNode
+
     def getX(self):
         return self.x
     
@@ -30,8 +33,8 @@ class aNode:
     
     def getF(self):
         return self.f
-    def setF(self, newF):
-        self.f = newF
+    def setF(self):
+        self.f = self.getG() + self.getH()
     
     def getG(self):
         return self.g
@@ -40,5 +43,8 @@ class aNode:
     
     def getH(self):
         return self.h
-    def setH(self, newH):
-        self.h = newH
+    
+    # Set the relative distance from current node to target node (xy)
+    def setH(self, xy):
+        # Dist = max(abs(x2-x1), abs(y2-y1))
+        self.h = max( abs(xy[1].getX() - xy[0].getX()), abs(xy[1].getY() - xy[0].getY()) )

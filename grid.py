@@ -93,4 +93,18 @@ class Grid:
         except IndexError:
             print("Warning - index of 'Right Node' is out of bounds")
     
-    
+    def getAllAdjacentNodes(self, currentNode) -> []:
+        allAdjacentNodes = []
+        try:
+            allAdjacentNodes.append(self.getUpNode())
+            allAdjacentNodes.append(self.getUpRightNode())
+            allAdjacentNodes.append(self.getRightNode())
+            allAdjacentNodes.append(self.getDownRightNode())
+            allAdjacentNodes.append(self.getDownNode())
+            allAdjacentNodes.append(self.getDownLeftNode())
+            allAdjacentNodes.append(self.getLeftNode())
+            allAdjacentNodes.append(self.getUpLeftNode())
+        except IndexError:
+            print("Warning - index of 'node' is out of bounds")
+        
+        return allAdjacentNodes
