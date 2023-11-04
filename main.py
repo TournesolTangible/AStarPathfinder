@@ -1,5 +1,4 @@
 import pygame
-import random
 from grid import *
 from time import sleep
 
@@ -88,11 +87,11 @@ def clearAllLists(listOfLists):
     for list in listOfLists:
         list.clear()
 
-# Set parentNode to be parent of all adjacent nodes that aren't blocked
-def setAllAdjacentChildren(parentNode, blockedList) -> []:
+# Set parentNode to be parent of all adjacent nodes that aren't closed off
+def setAllAdjacentChildren(parentNode, closedList) -> []:
     listOfChildren = gridModel.getAllAdjacentNodes(parentNode)
     for node in listOfChildren:
-        if node not in blockedList and node:
+        if node not in closedList:
             node.setParent(parentNode)
 
     return listOfChildren
@@ -132,7 +131,10 @@ def main():
     openList = []     
 
     # for tiles that may not be 'traversed        
-    closedList = []  
+    closedList = []
+
+    # the final path that has the shortest length of nodes from start to end tile
+    path = []
 
     # Main loop execution
     while running: 
@@ -148,14 +150,7 @@ def main():
 
             # Handle Left Click (selecting tiles)
             if state == (True, False, False):
-
-                # # If tile selected  ->  unselect it
-                # if gridModel.getTileListItem(mousePos) in selectedTiles and gridModel.getTileListItem(mousePos) not in startAndEndTiles:
-                #     selectedTiles.remove(gridModel.getTileListItem(mousePos))
-
-                # # If tile unselected  ->  select it
-                # else:
-                    blockedTiles.append(gridModel.getTileListItem(mousePos))
+                blockedTiles.append(gridModel.getTileListItem(mousePos))
 
             # Handle Right Click (selecting start and end node)
             if state == (False, False, True):
@@ -177,67 +172,47 @@ def main():
                 ready = True
                 startAndEnd = (startAndEndTiles[0], startAndEndTiles[1])
 
-            
+
             # MAIN PATHFINDING CODE HERE #########################################
             #
             if ready == True:                
 
-                # set currentNode to starting tile and initialize g, h, f values
-                currentNode = startAndEnd[0]
-                currentNode.setG(0)
-                currentNode.setH(startAndEnd)
-
-
-#     // Get the current node
-#     let the currentNode equal the node with the least f value
-#     remove the currentNode from the openList
-#     add the currentNode to the closedList
-
-#     // Found the goal
-#     if currentNode is the goal
-#         Congratz! You've found the end! Backtrack to get path
-#     // Generate children
-#     let the children of the currentNode equal the adjacent nodes
-    
-#     for each child in the children
-#         // Child is on the closedList
-#         if child is in the closedList
-#             continue to beginning of for loop
-#         // Create the f, g, and h values
-#         child.g = currentNode.g + distance between child and current
-#         child.h = distance from child to end
-#         child.f = child.g + child.h
-#         // Child is already in openList
-#         if child.position is in the openList's nodes positions
-#             if the child.g is higher than the openList node's g
-#                 continue to beginning of for loop
-#         // Add the child to the openList
-#         add the child to the openList
-
+                # set startNode to starting tile and initialize g, h, f values
+                startNode = startAndEnd[0]
+                startNode.setG(0)
+                startNode.setH(startAndEnd)
 
                 # add the starting node
-                openList.append(currentNode)
+                openList.append(startNode)
                 
                 # loop until end is found
                 while len(openList) > 0:
 
                     # get current node
-                    currentNode = findSmallestFValue(openList)
-                    openList.remove(currentNode)
+                    currentNode = openList[0]
+                    currentIndex = 0
+                    for index, item in enumerate(openList):
+                        if item.getF() < currentNode.getF():
+                            item.setParent(currentNode)
+                            currentNode = item
+                            currentIndex = index
+
+                    openList.pop(currentIndex)
                     closedList.append(currentNode)
 
                     # if end found
                     if currentNode == startAndEnd[1]:
-                        # #############################################################   backtrack to get the path  #####
-                        print("\n\n\n                               success!\n\n\n")
-                        ready = False
-                        endFound = True
-                        break
+                        current = currentNode
+                        while current != startAndEnd[0]:
+                            path.append(current)
+                            current = current.getParent()
+                            for item in path:
+                                print(item)
+                            break
                     
                     # else, generate list of 'unblocked' children
                     else:
                         children = setAllAdjacentChildren(currentNode, blockedTiles)
-
                     for child in children:
                         if child:
                             # ignore if child in closedList (not traversable)
@@ -262,14 +237,12 @@ def main():
                                     child.setF()
 
                         if startAndEnd[1] in closedList or currentNode == startAndEnd[1]:
-                            # #############################################################   backtrack to get the path  #####
-                            print("\n\n\n                               success!\n\n\n")
                             ready = False
                             endFound = True
                             break
 
                     redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
-                    sleep(0.1) 
+                     
 
             # Run tests ##########################################################
             #
