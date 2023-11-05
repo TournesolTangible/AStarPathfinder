@@ -1,4 +1,6 @@
 import pygame
+# python -m pip install pyautogui
+import pyautogui
 from grid import *
 from time import sleep
 
@@ -9,6 +11,7 @@ GRAY = (150, 150, 150)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
 
 def drawGrid(window, size, rows):
 
@@ -66,7 +69,7 @@ def drawTestTiles(window, tiles):
 
 def drawOpenTiles(window, tiles):
     for tile in tiles:
-        pygame.draw.rect(window, RED, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+        pygame.draw.rect(window, YELLOW, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
 
 # Defines tile size based on size of window and number of rows
 def setTileSize(size, rows):
@@ -165,7 +168,9 @@ def main():
                 if event.key == pygame.K_SPACE:
                     testing = True
                 elif event.key == pygame.K_c:
-                    clearAllLists([blockedTiles, startAndEndTiles, testTiles, openList])
+                    clearAllLists([blockedTiles, startAndEndTiles, testTiles, openList, closedList])
+                    ready = False
+                    endFound = False
 
             # Handle start and end placed ( Begin search algorithm )
             if len(startAndEndTiles) > 1 and endFound == False:
@@ -175,7 +180,7 @@ def main():
 
             # MAIN PATHFINDING CODE HERE #########################################
             #
-            if ready == True:                
+            if ready == True:               
 
                 # set startNode to starting tile and initialize g, h, f values
                 startNode = startAndEnd[0]
@@ -186,7 +191,7 @@ def main():
                 openList.append(startNode)
                 
                 # loop until end is found
-                while len(openList) > 0:
+                while len(openList) > 0 and endFound == False:
 
                     # get current node
                     currentNode = openList[0]
@@ -242,6 +247,9 @@ def main():
                             break
 
                     redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
+                    sleep(0.1)
+                
+                # execution goes here after found
                      
 
             # Run tests ##########################################################
@@ -297,7 +305,12 @@ def main():
                 testTiles.append(testNode)
 
         redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
+
+
+
+    pyautogui.alert(f'The shortest path is: ', "Results")  # always returns "OK"
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()
