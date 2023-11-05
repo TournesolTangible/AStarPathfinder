@@ -55,3 +55,5 @@ class aNode:
     def setH(self, xy):
         # Dist = max(abs(x2-x1), abs(y2-y1))
         self.h = max( abs(xy[1].getX() - xy[0].getX()), abs(xy[1].getY() - xy[0].getY()) )
+
+

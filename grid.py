@@ -48,6 +48,8 @@ class Grid:
                     return i
         return 
 
+    def getXYCoord(self, node):
+        return node.getW() // self.rows, node.getZ() // self.cols
     
     # Traversal Methods ###################################################
     #

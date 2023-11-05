@@ -90,12 +90,13 @@ def clearAllLists(listOfLists):
     for list in listOfLists:
         list.clear()
 
-# Set parentNode to be parent of all adjacent nodes that aren't closed off
+# Set parentNode to be parent of all adjacent nodes that are not closed off
 def setAllAdjacentChildren(parentNode, closedList) -> []:
     listOfChildren = gridModel.getAllAdjacentNodes(parentNode)
     for node in listOfChildren:
         if node not in closedList:
             node.setParent(parentNode)
+            pass
 
     return listOfChildren
 
@@ -112,6 +113,7 @@ def main():
 
     # window definition
     window = pygame.display.set_mode((size, size))
+    pygame.display.set_caption('A* Pathfinding Tool')
 
     running = True   # Used to keep the program running
     ready = False    # Used to start the A* pathfinding
@@ -139,6 +141,7 @@ def main():
     # the final path that has the shortest length of nodes from start to end tile
     path = []
 
+    pyautogui.alert('Draw "blocking" tiles with left mouse click\nDraw "Start" and "End" tiles using right mouse click\nThe board may be cleared with the "c" key', "A* Pathfinding") 
     # Main loop execution
     while running: 
 
@@ -235,7 +238,7 @@ def main():
                             # if child in openList  ->  check if it has a lower g value (more efficient path)   
                             elif child in openList:
                                 if child.getG() < currentNode.getG():
-                                    child.setParent(currentNode)
+                                    #child.setParent(currentNode)
                                     child.setG(child.getParent().getG()+1)
                                     nodePair = [child, startAndEnd[1]]
                                     child.setH(nodePair)
@@ -306,9 +309,6 @@ def main():
 
         redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
 
-
-
-    pyautogui.alert(f'The shortest path is: ', "Results")  # always returns "OK"
     pygame.quit()
 
 
