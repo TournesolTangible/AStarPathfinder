@@ -1,10 +1,9 @@
 import pygame
-# python -m pip install pyautogui
 import pyautogui
 from grid import *
 from time import sleep
 
-# Define Colors 
+# Define colors for drawing functions
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (150, 150, 150)
@@ -13,95 +12,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
-def drawGrid(window, size, rows):
-
-    # Takes window, size, and number of rows to draw gridlines on window
-    distanceBetweenRows = size // rows
-    x = 0
-    y = 0
-    for l in range(rows):
-        x += distanceBetweenRows
-        y += distanceBetweenRows
-        pygame.draw.line(window, WHITE, (x, 0), (x, size))
-        pygame.draw.line(window, WHITE, (0, y), (size, y))
-
-# Creates the global 'gridModel' which stores the coordinates for each grid tile
-def createGridModel():
-    global gridModel
-    gridModel = Grid(rows, rows, size)
-
-# Redraws the entire model
-def redraw(window, selectedTiles, startAndEndTiles, testTiles, openTiles):
-    global size, rows
-
-    # fill window with black 
-    window.fill(BLACK)
-    drawGrid(window, size, rows)
-
-    # fill in tiles that have been selected in GRAY
-    drawSelectedTiles(window, selectedTiles)
-
-    # fill in tiles that are start/ends in WHITE
-    drawStartAndEndTiles(window, startAndEndTiles)
-
-    # fill in the test tiles in GREEN (testing purposes)
-    drawTestTiles(window, testTiles)
-
-    # fill the open tiles in RED 
-    drawOpenTiles(window, openTiles)
-
-    # update display
-    pygame.display.update()
-
-
-# Draws the selected tiles in GRAY
-def drawSelectedTiles(window, tiles):
-    for tile in tiles:
-        pygame.draw.rect(window, GRAY, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
-
-def drawStartAndEndTiles(window, tiles):
-    for tile in tiles:
-        pygame.draw.rect(window, WHITE, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
-
-def drawTestTiles(window, tiles):
-    for tile in tiles:
-        pygame.draw.rect(window, GREEN, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
-
-def drawOpenTiles(window, tiles):
-    for tile in tiles:
-        pygame.draw.rect(window, YELLOW, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
-
-# Defines tile size based on size of window and number of rows
-def setTileSize(size, rows):
-    global tileSize
-    tileSize = size // rows
-
-def getTileSize():
-    return tileSize
-
-def findSmallestFValue(list) -> aNode:
-    smallestF = 100000.0
-    for item in list:
-        if item.getF() < smallestF:
-            smallestFNode = item
-    return smallestFNode
-
-def clearAllLists(listOfLists):
-    for list in listOfLists:
-        list.clear()
-
-# Set parentNode to be parent of all adjacent nodes that are not closed off
-def setAllAdjacentChildren(parentNode, closedList) -> []:
-    listOfChildren = gridModel.getAllAdjacentNodes(parentNode)
-    for node in listOfChildren:
-        if node not in closedList:
-            node.setParent(parentNode)
-            pass
-
-    return listOfChildren
-
-
-## MAIN PROGRAM STARTS HERE ############################
+## Main program begins here ##############################################################
 #
 #
 def main():
@@ -114,6 +25,8 @@ def main():
     # window definition
     window = pygame.display.set_mode((size, size))
     pygame.display.set_caption('A* Pathfinding Tool')
+    Icon = pygame.image.load('asterisk.png')
+    pygame.display.set_icon(Icon)
 
     running = True   # Used to keep the program running
     ready = False    # Used to start the A* pathfinding
@@ -141,7 +54,7 @@ def main():
     # the final path that has the shortest length of nodes from start to end tile
     path = []
 
-    pyautogui.alert('Draw "blocking" tiles with left mouse click\nDraw "Start" and "End" tiles using right mouse click\nThe board may be cleared with the "c" key', "A* Pathfinding") 
+    pyautogui.alert('Draw "blocking" tiles with left mouse click\nDraw "Start" and "End" tiles using right mouse click\nThe board may be cleared with the "c" key\nA* Is a pathfinding algorithm that is popularly used in video game development\nIt works in a similar way to Dijkstras algorithm, where each tile is a graph node\nHowever, A* estimates the remaining distance to the end node, which\nallows this algorithm to reach the destination on average much quicker than Dijkstras', "A* Pathfinding")
     # Main loop execution
     while running: 
 
@@ -169,7 +82,8 @@ def main():
             # Handle Space input ( Run tests )  or 'c' input ( Clear lists, fresh board )
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    testing = True
+                    #testing = True
+                    pass
                 elif event.key == pygame.K_c:
                     clearAllLists([blockedTiles, startAndEndTiles, testTiles, openList, closedList])
                     ready = False
@@ -205,22 +119,23 @@ def main():
                             currentNode = item
                             currentIndex = index
 
+                    # remove currentIndex from openList  ->  add currentNode to closedList
                     openList.pop(currentIndex)
                     closedList.append(currentNode)
 
-                    # if end found
-                    if currentNode == startAndEnd[1]:
-                        current = currentNode
-                        while current != startAndEnd[0]:
-                            path.append(current)
-                            current = current.getParent()
-                            for item in path:
-                                print(item)
-                            break
+                    # # # if end found
+                    # # if currentNode == startAndEnd[1]:
+                    # #     current = currentNode
+                    # #     while current != startAndEnd[0]:
+                    # #         path.append(current)
+                    # #         current = current.getParent()
+                    # #         for item in path:
+                    # #             print(item)
+                    # #         break
                     
-                    # else, generate list of 'unblocked' children
-                    else:
-                        children = setAllAdjacentChildren(currentNode, blockedTiles)
+                    # # else, generate list of 'unblocked' children
+                    # else:
+                    children = setAllAdjacentChildren(currentNode, blockedTiles)
                     for child in children:
                         if child:
                             # ignore if child in closedList (not traversable)
@@ -250,7 +165,7 @@ def main():
                             break
 
                     redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
-                    sleep(0.1)
+                    sleep(0.05)
                 
                 # execution goes here after found
                      
@@ -310,6 +225,100 @@ def main():
         redraw(window, blockedTiles, startAndEndTiles, testTiles, openList)
 
     pygame.quit()
+
+def drawGrid(window, size, rows):
+
+    # Takes window, size, and number of rows to draw gridlines on window
+    distanceBetweenRows = size // rows
+    x = 0
+    y = 0
+    for l in range(rows):
+        x += distanceBetweenRows
+        y += distanceBetweenRows
+        pygame.draw.line(window, WHITE, (x, 0), (x, size))
+        pygame.draw.line(window, WHITE, (0, y), (size, y))
+
+# Creates the global 'gridModel' which stores the coordinates for each grid tile
+def createGridModel():
+    global gridModel
+    gridModel = Grid(rows, rows, size)
+
+# Redraws the entire model
+def redraw(window, selectedTiles, startAndEndTiles, testTiles, openTiles):
+    global size, rows
+
+    # fill window with black 
+    window.fill(BLACK)
+    drawGrid(window, size, rows)
+
+    # fill in tiles that have been selected in GRAY
+    drawSelectedTiles(window, selectedTiles)
+
+    # fill in tiles that are start/ends in WHITE
+    drawStartAndEndTiles(window, startAndEndTiles)
+
+    # fill in the test tiles in GREEN (testing purposes)
+    drawTestTiles(window, testTiles)
+
+    # fill the open tiles in RED 
+    drawOpenTiles(window, openTiles)
+
+    # update display
+    pygame.display.update()
+
+
+# Drawing methods ############################################################################### 
+#
+#
+def drawSelectedTiles(window, tiles):
+    for tile in tiles:
+        pygame.draw.rect(window, GRAY, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+
+def drawStartAndEndTiles(window, tiles):
+    for tile in tiles:
+        pygame.draw.rect(window, WHITE, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+
+def drawTestTiles(window, tiles):
+    for tile in tiles:
+        pygame.draw.rect(window, GREEN, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+
+def drawOpenTiles(window, tiles):
+    for tile in tiles:
+        pygame.draw.rect(window, YELLOW, pygame.Rect(tile.x, tile.y, getTileSize(), getTileSize()))
+
+# Defines tile size based on size of window and number of rows
+def setTileSize(size, rows):
+    global tileSize
+    tileSize = size // rows
+
+def getTileSize():
+    return tileSize
+
+# Miscellaneous Algorithm functions #######################################
+#
+def findSmallestFValue(list) -> aNode:
+    smallestF = 100000.0
+    for item in list:
+        if item.getF() < smallestF:
+            smallestFNode = item
+    return smallestFNode
+
+def clearAllLists(listOfLists):
+    for list in listOfLists:
+        list.clear()
+
+# Set parentNode to be parent of all adjacent nodes that are not closed off
+def setAllAdjacentChildren(parentNode, closedList) -> []:
+    listOfChildren = gridModel.getAllAdjacentNodes(parentNode)
+    for node in listOfChildren:
+        if node not in closedList:
+            node.setParent(parentNode)
+            pass
+
+    return listOfChildren
+
+
+
 
 
 if __name__ == "__main__":
